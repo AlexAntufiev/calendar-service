@@ -1,0 +1,24 @@
+volumes:
+  data:
+
+services:
+  db:
+    image: postgres:latest
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - data:/var/lib/postgresql
+  calendar-service:
+    restart: "no"
+    depends_on:
+      - postgres
+    image: docker.io/library/calendar-service:latest
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db/postgres
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=none
